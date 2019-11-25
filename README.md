@@ -13,6 +13,6 @@ git init
 ```
 
 ```
-curl https://github.com/kidsnote/git_hook/raw/master/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
+curl https://raw.githubusercontent.com/kidsnote/git_hook/master/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
 ```
 
