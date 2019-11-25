@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ -z "$BRANCHES_TO_SKIP" ]; then
+  BRANCHES_TO_SKIP=(master develop release)
+fi
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+BRANCH_NAME="${BRANCH_NAME##*/}"
+HOTISSUE_ID=`echo $BRANCH_NAME | egrep -o 'issue-[0-9]+'`
+APP_ID=`echo $BRANCH_NAME | egrep -o '[0-9]+'`
+
+HOTISSUE_NO=`echo $HOTISSUE_ID | egrep -o '[0-9]+'`
+APP_NO=`echo $APP_ID | egrep -o '[0-9]+'`
+
+HOTISSUE_PREFIX="kidsnote/hot_issue#"
+
+BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
+BRANCH_IN_COMMIT=$(grep -c "$HOTISSUE_ID" $1)
+BRANCH_IN_COMMIT_2=$(grep -c "$APP_ID" $1)
+
+if [ -n $HOTISSUE_ID ] && ! [[ $BRANCH_EXCLUDED -eq 1 ]] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
+  sed -i.bak -e "1s%^%[$HOTISSUE_PREFIX""$HOTISSUE_NO] %" $1
+elif [ -n $APP_ID ] && ! [[ $BRANCH_EXCLUDED -eq 1 ]] && ! [[ $BRANCH_IN_COMMIT_2 -ge 1 ]]; then
+  sed -i.bak -e "1s%^%[#$APP_NO] %" $1
+fi
